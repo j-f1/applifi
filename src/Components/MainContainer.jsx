@@ -1,7 +1,7 @@
-import React from 'react';
-import NavBar from './NavBar';
+import React from "react";
+import NavBar from "./NavBar";
 
-import './MainContainer.css';
+import "./MainContainer.css";
 
 export default function MainContainer({ children }) {
   return (

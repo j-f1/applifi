@@ -1,10 +1,10 @@
 export const getHashFragment = (location) => {
   return location.hash
     .substring(1)
-    .split('&')
+    .split("&")
     .reduce((initial, item) => {
       if (item) {
-        var parts = item.split('=');
+        var parts = item.split("=");
         initial[parts[0]] = decodeURIComponent(parts[1]);
       }
       return initial;
@@ -12,5 +12,5 @@ export const getHashFragment = (location) => {
 };
 
 export const hideHashFragment = () => {
-  window.location.hash = '';
+  window.location.hash = "";
 };

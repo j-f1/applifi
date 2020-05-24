@@ -1,12 +1,12 @@
 //  verse window data reducer
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'hideVerseWindow':
+    case "hideVerseWindow":
       return {
         ...state,
         showVerseWindow: false,
       };
-    case 'showVerseWindow':
+    case "showVerseWindow":
       return {
         ...state,
         showVerseWindow: true,
@@ -22,13 +22,13 @@ const reducer = (state, action) => {
 //  verse window data action(s)
 export const hideVerseWindow = () => {
   return {
-    type: 'hideVerseWindow',
+    type: "hideVerseWindow",
   };
 };
 
 export const showVerseWindow = (bookIndex, chapterIndex, verseIndex) => {
   return {
-    type: 'showVerseWindow',
+    type: "showVerseWindow",
     bookIndex,
     chapterIndex,
     verseIndex,

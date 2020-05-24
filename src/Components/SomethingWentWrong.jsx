@@ -1,7 +1,7 @@
-import React from 'react';
-import MainContainer from 'Components/MainContainer';
+import React from "react";
+import MainContainer from "Components/MainContainer";
 
-import './SomethingWentWrong.css';
+import "./SomethingWentWrong.css";
 
 export default function SomethingWentWrong({ message }) {
   return (

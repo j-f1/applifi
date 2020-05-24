@@ -1,8 +1,8 @@
-import React from 'react';
-import { toast } from 'react-toastify';
-import { StateContext } from 'State';
-import { setToken } from 'Modules/token';
-import { getHashFragment, hideHashFragment } from 'Helpers/hash';
+import React from "react";
+import { toast } from "react-toastify";
+import { StateContext } from "State";
+import { setToken } from "Modules/token";
+import { getHashFragment, hideHashFragment } from "Helpers/hash";
 import {
   getCurrentUserProfile,
   createPlaylist,
@@ -10,14 +10,14 @@ import {
   getPlaylistTracks,
   addTracksToPlaylist,
   getCurrentPlaybackInfo,
-} from 'Helpers/spotify';
-import MainContainer from 'Components/MainContainer';
-import Loading from 'Components/Loading';
-import SomethingWentWrong from 'Components/SomethingWentWrong';
+} from "Helpers/spotify";
+import MainContainer from "Components/MainContainer";
+import Loading from "Components/Loading";
+import SomethingWentWrong from "Components/SomethingWentWrong";
 
-import './Copy.css';
+import "./Copy.css";
 
-const placeholder = 'open.spotify.com/playlist/37i9dQZEV';
+const placeholder = "open.spotify.com/playlist/37i9dQZEV";
 
 export default class Copy extends React.Component {
   constructor(props) {
@@ -25,12 +25,12 @@ export default class Copy extends React.Component {
 
     this.state = {
       error: false,
-      errorMsg: '',
-      currentUser: '',
-      playlistToCopy: '',
+      errorMsg: "",
+      currentUser: "",
+      playlistToCopy: "",
       isCopying: false,
       copyCompleted: false,
-      newPlaylistUrl: '',
+      newPlaylistUrl: "",
       urlInDescription: true,
     };
   }
@@ -55,7 +55,7 @@ export default class Copy extends React.Component {
       this.setState({
         error: true,
         errorMsg:
-          'No access token returned by Spotify. Please try again later.',
+          "No access token returned by Spotify. Please try again later.",
       });
     }
 
@@ -80,7 +80,7 @@ export default class Copy extends React.Component {
 
     this.setState({
       currentUser: userData,
-      playlistToCopy: currentPlaylist.error ? '' : currentPlaylist,
+      playlistToCopy: currentPlaylist.error ? "" : currentPlaylist,
     });
 
     dispatch(setToken(token));
@@ -92,7 +92,7 @@ export default class Copy extends React.Component {
     setTimeout(async () => {
       let { currentUser, playlistToCopy, urlInDescription } = this.state;
 
-      let playlistToCopyArr = playlistToCopy.split('/').filter(Boolean);
+      let playlistToCopyArr = playlistToCopy.split("/").filter(Boolean);
 
       if (playlistToCopyArr.length === 0) {
         alert(
@@ -103,7 +103,7 @@ export default class Copy extends React.Component {
       }
 
       // Split on ? in case there are query params in the pasted url
-      playlistToCopy = playlistToCopyArr.pop().split('?')[0];
+      playlistToCopy = playlistToCopyArr.pop().split("?")[0];
 
       const [{ token }] = this.context;
 
@@ -122,11 +122,11 @@ export default class Copy extends React.Component {
         return;
       }
 
-      toast('Retrieved playlist');
+      toast("Retrieved playlist");
 
       let descriptionUrl = urlInDescription
         ? ` - Originally copied from open.spotify.com\\playlist\\${playlistToCopy}`
-        : '';
+        : "";
 
       // Create new playlist with the same name
       let newPlaylist = await createPlaylist(
@@ -193,7 +193,7 @@ export default class Copy extends React.Component {
         toast(`Added track set ${i + 1} of ${tracks.length}`);
       }
 
-      toast.success('Playlist created!', {
+      toast.success("Playlist created!", {
         autoClose: 5000,
       });
 
@@ -216,7 +216,7 @@ export default class Copy extends React.Component {
       !data ||
       data.error ||
       !data.context ||
-      data.context.type !== 'playlist'
+      data.context.type !== "playlist"
     ) {
       return {
         error: true,
@@ -241,16 +241,16 @@ export default class Copy extends React.Component {
     }
 
     this.setState({
-      playlistToCopy: currentPlaylist.error ? '' : currentPlaylist,
+      playlistToCopy: currentPlaylist.error ? "" : currentPlaylist,
       isCopying: false,
       copyCompleted: false,
-      newPlaylistUrl: '',
+      newPlaylistUrl: "",
     });
   };
 
   handleInputChange = (event) => {
     const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
 
     this.setState({
@@ -285,7 +285,7 @@ export default class Copy extends React.Component {
             <div className="copy-again">
               <h1>Playlist created!</h1>
               <p>
-                You can find it{' '}
+                You can find it{" "}
                 <a
                   href={newPlaylistUrl}
                   target="_blank"

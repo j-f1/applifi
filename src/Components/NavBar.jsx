@@ -1,16 +1,16 @@
-import React, { useState, useCallback } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useCallback } from "react";
+import { NavLink } from "react-router-dom";
 
-import './NavBar.css';
+import "./NavBar.css";
 
 export default function NavBar() {
-  const [navbarClassName, setNavbarClassName] = useState('main-nav');
+  const [navbarClassName, setNavbarClassName] = useState("main-nav");
 
   const toggleResponsiveMenu = useCallback(() => {
-    if (navbarClassName === 'main-nav') {
-      setNavbarClassName('main-nav navbar-mobile');
+    if (navbarClassName === "main-nav") {
+      setNavbarClassName("main-nav navbar-mobile");
     } else {
-      setNavbarClassName('main-nav');
+      setNavbarClassName("main-nav");
     }
   }, [navbarClassName]);
 

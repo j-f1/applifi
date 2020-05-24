@@ -1,7 +1,7 @@
 //  token reducer
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'setToken':
+    case "setToken":
       return action.token;
     default:
       return state;
@@ -11,7 +11,7 @@ const reducer = (state, action) => {
 //  set token action
 export const setToken = (token) => {
   return {
-    type: 'setToken',
+    type: "setToken",
     token,
   };
 };

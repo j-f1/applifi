@@ -1,6 +1,4 @@
 {
-  "name": "copyfi",
-  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "husky": "^3.0.4",
@@ -20,7 +18,7 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --single-quote --write",
+      "prettier --write",
       "git add"
     ]
   },

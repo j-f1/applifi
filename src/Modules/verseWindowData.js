@@ -4,7 +4,7 @@ const reducer = (state, action) => {
     case 'hideVerseWindow':
       return {
         ...state,
-        showVerseWindow: false
+        showVerseWindow: false,
       };
     case 'showVerseWindow':
       return {
@@ -12,7 +12,7 @@ const reducer = (state, action) => {
         showVerseWindow: true,
         bookIndex: action.bookIndex,
         chapterIndex: action.chapterIndex,
-        verseIndex: action.verseIndex
+        verseIndex: action.verseIndex,
       };
     default:
       return state;
@@ -22,7 +22,7 @@ const reducer = (state, action) => {
 //  verse window data action(s)
 export const hideVerseWindow = () => {
   return {
-    type: 'hideVerseWindow'
+    type: 'hideVerseWindow',
   };
 };
 
@@ -31,7 +31,7 @@ export const showVerseWindow = (bookIndex, chapterIndex, verseIndex) => {
     type: 'showVerseWindow',
     bookIndex,
     chapterIndex,
-    verseIndex
+    verseIndex,
   };
 };
 

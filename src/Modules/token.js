@@ -9,10 +9,10 @@ const reducer = (state, action) => {
 };
 
 //  set token action
-export const setToken = token => {
+export const setToken = (token) => {
   return {
     type: 'setToken',
-    token
+    token,
   };
 };
 

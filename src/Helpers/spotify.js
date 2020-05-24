@@ -9,10 +9,10 @@ const scopes = [
   'playlist-modify-private',
   'user-read-email',
   'user-read-private',
-  'user-read-playback-state'
+  'user-read-playback-state',
 ];
 
-const makeid = length => {
+const makeid = (length) => {
   var result = '';
   var characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -34,13 +34,13 @@ export const authLink =
   '&response_type=token&show_dialog=true&state=' +
   makeid(16);
 
-export const getCurrentUserProfile = async token => {
+export const getCurrentUserProfile = async (token) => {
   let response = await fetch(`https://api.spotify.com/v1/me`, {
     method: 'GET',
     headers: new Headers({
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`
-    })
+      Authorization: `Bearer ${token}`,
+    }),
   });
   let data = await response.json();
   return data;
@@ -65,13 +65,13 @@ export const createPlaylist = async (token, userId, name, description) => {
       method: 'POST',
       headers: new Headers({
         Accept: 'application/json',
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       }),
       body: JSON.stringify({
         name,
         description,
-        public: true
-      })
+        public: true,
+      }),
     }
   );
   let data = await response.json();
@@ -84,8 +84,8 @@ export const getPlaylistInfo = async (token, playlistId) => {
     method: 'GET',
     headers: new Headers({
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`
-    })
+      Authorization: `Bearer ${token}`,
+    }),
   });
   let data = await response.json();
   return data;
@@ -99,8 +99,8 @@ export const getPlaylistTracks = async (token, playlistId, next) => {
     method: 'GET',
     headers: new Headers({
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`
-    })
+      Authorization: `Bearer ${token}`,
+    }),
   });
   let data = await response.json();
   return data;
@@ -113,33 +113,33 @@ export const addTracksToPlaylist = async (token, playlistId, tracklist) => {
       method: 'POST',
       headers: new Headers({
         Accept: 'application/json',
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       }),
       body: JSON.stringify({
-        uris: tracklist
-      })
+        uris: tracklist,
+      }),
     }
   );
   let data = await response.json();
   return data;
 };
 
-export const getCurrentPlaybackInfo = async token => {
+export const getCurrentPlaybackInfo = async (token) => {
   let response = await fetch('https://api.spotify.com/v1/me/player', {
     method: 'GET',
     headers: new Headers({
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`
-    })
+      Authorization: `Bearer ${token}`,
+    }),
   });
 
   if (!response.ok) {
     return {
-      error: true
+      error: true,
     };
   }
 
-  return response.text().then(text => {
+  return response.text().then((text) => {
     return text ? JSON.parse(text) : { error: true };
   });
 };

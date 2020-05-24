@@ -9,7 +9,7 @@ import {
   getPlaylistInfo,
   getPlaylistTracks,
   addTracksToPlaylist,
-  getCurrentPlaybackInfo
+  getCurrentPlaybackInfo,
 } from 'Helpers/spotify';
 import MainContainer from 'Components/MainContainer';
 import Loading from 'Components/Loading';
@@ -31,7 +31,7 @@ export default class Copy extends React.Component {
       isCopying: false,
       copyCompleted: false,
       newPlaylistUrl: '',
-      urlInDescription: true
+      urlInDescription: true,
     };
   }
 
@@ -44,7 +44,7 @@ export default class Copy extends React.Component {
 
     if (!hash) {
       this.setState({
-        error: true
+        error: true,
       });
       return;
     }
@@ -54,7 +54,8 @@ export default class Copy extends React.Component {
     if (!token) {
       this.setState({
         error: true,
-        errorMsg: 'No access token returned by Spotify. Please try again later.'
+        errorMsg:
+          'No access token returned by Spotify. Please try again later.',
       });
     }
 
@@ -66,7 +67,7 @@ export default class Copy extends React.Component {
     if (userData.error) {
       this.setState({
         error: true,
-        errorMsg: JSON.stringify(userData, null, 4)
+        errorMsg: JSON.stringify(userData, null, 4),
       });
       return;
     }
@@ -79,13 +80,13 @@ export default class Copy extends React.Component {
 
     this.setState({
       currentUser: userData,
-      playlistToCopy: currentPlaylist.error ? '' : currentPlaylist
+      playlistToCopy: currentPlaylist.error ? '' : currentPlaylist,
     });
 
     dispatch(setToken(token));
   };
 
-  onFormSubmit = async e => {
+  onFormSubmit = async (e) => {
     e.preventDefault();
 
     setTimeout(async () => {
@@ -116,7 +117,7 @@ export default class Copy extends React.Component {
       if (playlistInfo.error) {
         this.setState({
           error: true,
-          errorMsg: JSON.stringify(playlistInfo, null, 4)
+          errorMsg: JSON.stringify(playlistInfo, null, 4),
         });
         return;
       }
@@ -138,7 +139,7 @@ export default class Copy extends React.Component {
       if (newPlaylist.error) {
         this.setState({
           error: true,
-          errorMsg: JSON.stringify(newPlaylist, null, 4)
+          errorMsg: JSON.stringify(newPlaylist, null, 4),
         });
         return;
       }
@@ -154,7 +155,7 @@ export default class Copy extends React.Component {
         if (data.error) {
           this.setState({
             error: true,
-            errorMsg: JSON.stringify(data, null, 4)
+            errorMsg: JSON.stringify(data, null, 4),
           });
           return;
         }
@@ -184,7 +185,7 @@ export default class Copy extends React.Component {
         if (returnedData.error) {
           this.setState({
             error: true,
-            errorMsg: JSON.stringify(returnedData, null, 4)
+            errorMsg: JSON.stringify(returnedData, null, 4),
           });
           return;
         }
@@ -193,22 +194,22 @@ export default class Copy extends React.Component {
       }
 
       toast.success('Playlist created!', {
-        autoClose: 5000
+        autoClose: 5000,
       });
 
       this.setState({
         isCopying: false,
         copyCompleted: true,
-        newPlaylistUrl: newPlaylist.external_urls.spotify
+        newPlaylistUrl: newPlaylist.external_urls.spotify,
       });
     }, 1000);
 
     this.setState({
-      isCopying: true
+      isCopying: true,
     });
   };
 
-  getCurrentPlayingPlaylist = async token => {
+  getCurrentPlayingPlaylist = async (token) => {
     let data = await getCurrentPlaybackInfo(token);
 
     if (
@@ -218,16 +219,16 @@ export default class Copy extends React.Component {
       data.context.type !== 'playlist'
     ) {
       return {
-        error: true
+        error: true,
       };
     }
 
     return data.context.external_urls.spotify.substr(8);
   };
 
-  onChangePlaylistToCopy = e => {
+  onChangePlaylistToCopy = (e) => {
     this.setState({
-      playlistToCopy: e.target.value
+      playlistToCopy: e.target.value,
     });
   };
 
@@ -243,17 +244,17 @@ export default class Copy extends React.Component {
       playlistToCopy: currentPlaylist.error ? '' : currentPlaylist,
       isCopying: false,
       copyCompleted: false,
-      newPlaylistUrl: ''
+      newPlaylistUrl: '',
     });
   };
 
-  handleInputChange = event => {
+  handleInputChange = (event) => {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -266,7 +267,7 @@ export default class Copy extends React.Component {
       isCopying,
       copyCompleted,
       newPlaylistUrl,
-      urlInDescription
+      urlInDescription,
     } = this.state;
 
     if (error) {

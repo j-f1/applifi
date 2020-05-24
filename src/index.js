@@ -7,11 +7,11 @@ import { StateProvider } from './State';
 import tokenReducer from './Modules/token';
 
 const initialState = {
-  token: ''
+  token: '',
 };
 
 const mainReducer = ({ token }, action) => ({
-  token: tokenReducer(token, action)
+  token: tokenReducer(token, action),
 });
 
 ReactDOM.render(

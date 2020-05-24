@@ -1,4 +1,4 @@
-export const getHashFragment = location => {
+export const getHashFragment = (location) => {
   return location.hash
     .substring(1)
     .split('&')

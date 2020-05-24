@@ -3,30 +3,26 @@ import MainContainer from 'Components/MainContainer';
 
 import './SomethingWentWrong.css';
 
-export default class SomethingWentWrong extends React.Component {
-  render = () => {
-    const { message } = this.props;
-    return (
-      <MainContainer>
-        <div className="something-wrong">
-          {!message && (
+export default function SomethingWentWrong({ message }) {
+  return (
+    <MainContainer>
+      <div className="something-wrong">
+        {!message && (
+          <div>
+            Something went wrong. Please <a href="/">go back</a> and try again.
+          </div>
+        )}
+        {message && (
+          <React.Fragment>
+            <code>
+              <pre>{message}</pre>
+            </code>
             <div>
-              Something went wrong. Please <a href="/">go back</a> and try
-              again.
+              Click <a href="/">here</a> to try again.
             </div>
-          )}
-          {message && (
-            <React.Fragment>
-              <code>
-                <pre>{message}</pre>
-              </code>
-              <div>
-                Click <a href="/">here</a> to try again.
-              </div>
-            </React.Fragment>
-          )}
-        </div>
-      </MainContainer>
-    );
-  };
+          </React.Fragment>
+        )}
+      </div>
+    </MainContainer>
+  );
 }

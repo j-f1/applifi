@@ -1,343 +1,227 @@
-import React from "react";
-import { toast } from "react-toastify";
-import { StateContext } from "State";
-import { setToken } from "Modules/token";
-import { getHashFragment, hideHashFragment } from "Helpers/hash";
-import {
-  getCurrentUserProfile,
-  createPlaylist,
-  getPlaylistInfo,
-  getPlaylistTracks,
-  addTracksToPlaylist,
-  getCurrentPlaybackInfo,
-} from "Helpers/spotify";
+import React, { useState, useCallback, useEffect } from "react";
 import MainContainer from "Components/MainContainer";
-import Loading from "Components/Loading";
-import SomethingWentWrong from "Components/SomethingWentWrong";
-
+import useInputState from "Modules/useInput";
+import { getPlaylistInfo } from "Helpers/spotify";
+import { toast } from "react-toastify";
+import tick from "Modules/promiseTick";
 import "./Copy.css";
 
 const placeholder = "open.spotify.com/playlist/37i9dQZEV";
 
-export default class Copy extends React.Component {
-  constructor(props) {
-    super(props);
+async function getAllPlaylistTracks(spotifyToken, playlistID) {
+  let tracks = [];
+  let next = `https://api.spotify.com/v1/playlists/${playlistID}/tracks?fields=items(track(id))`;
+  let index = 0;
 
-    this.state = {
-      error: false,
-      errorMsg: "",
-      currentUser: "",
-      playlistToCopy: "",
-      isCopying: false,
-      copyCompleted: false,
-      newPlaylistUrl: "",
-      urlInDescription: true,
-    };
-  }
+  // Get playlist tracks only allow 100 at a time.
+  // The spotify api kindly provides a 'next' property with a url
+  // to get the next 100 tracks.
+  do {
+    const data = await fetch(next, {
+      method: "GET",
+      headers: new Headers({
+        Accept: "application/json",
+        Authorization: `Bearer ${spotifyToken}`,
+      }),
+    }).then((res) => res.json());
 
-  componentDidMount = async () => {
-    const { location } = this.props;
-
-    let hash = getHashFragment(location);
-
-    hideHashFragment();
-
-    if (!hash) {
-      this.setState({
-        error: true,
-      });
-      return;
+    if (data.error) {
+      console.log(JSON.stringify(data, null, 4));
+      toast("Error in getPlaylistTracks. See console for details.");
+      return [];
     }
 
-    let token = hash.access_token;
+    toast(`Gathered track set ${index + 1}`);
 
-    if (!token) {
-      this.setState({
-        error: true,
-        errorMsg:
-          "No access token returned by Spotify. Please try again later.",
-      });
-    }
+    next = data.next;
+    tracks = tracks.concat(data.items);
+    index++;
+  } while (next);
 
-    // const [ { token }, dispatch ] = this.context;
-    let dispatch = this.context[1];
-
-    let userData = await getCurrentUserProfile(token);
-
-    if (userData.error) {
-      this.setState({
-        error: true,
-        errorMsg: JSON.stringify(userData, null, 4),
-      });
-      return;
-    }
-
-    let currentPlaylist = await this.getCurrentPlayingPlaylist(token);
-
-    if (!currentPlaylist.error) {
-      toast("Auto-filled the playlist you're currently listening to!");
-    }
-
-    this.setState({
-      currentUser: userData,
-      playlistToCopy: currentPlaylist.error ? "" : currentPlaylist,
-    });
-
-    dispatch(setToken(token));
-  };
-
-  onFormSubmit = async (e) => {
-    e.preventDefault();
-
-    setTimeout(async () => {
-      let { currentUser, playlistToCopy, urlInDescription } = this.state;
-
-      let playlistToCopyArr = playlistToCopy.split("/").filter(Boolean);
-
-      if (playlistToCopyArr.length === 0) {
-        alert(
-          "Your Playlist link isn't in the right format. Should look like this: " +
-            placeholder
-        );
-        return;
-      }
-
-      // Split on ? in case there are query params in the pasted url
-      playlistToCopy = playlistToCopyArr.pop().split("?")[0];
-
-      const [{ token }] = this.context;
-
-      let tracks = [];
-      let data = undefined;
-      let next = undefined;
-      let index = 0;
-
-      let playlistInfo = await getPlaylistInfo(token, playlistToCopy);
-
-      if (playlistInfo.error) {
-        this.setState({
-          error: true,
-          errorMsg: JSON.stringify(playlistInfo, null, 4),
-        });
-        return;
-      }
-
-      toast("Retrieved playlist");
-
-      let descriptionUrl = urlInDescription
-        ? ` - Originally copied from open.spotify.com\\playlist\\${playlistToCopy}`
-        : "";
-
-      // Create new playlist with the same name
-      let newPlaylist = await createPlaylist(
-        token,
-        currentUser.id,
-        playlistInfo.name,
-        playlistInfo.description + descriptionUrl
-      );
-
-      if (newPlaylist.error) {
-        this.setState({
-          error: true,
-          errorMsg: JSON.stringify(newPlaylist, null, 4),
-        });
-        return;
-      }
-
-      toast(`Created new playlist ${playlistInfo.name}`);
-
-      // Get playlist tracks only allow 100 at a time.
-      // The spotify api kindly provides a 'next' property with a url
-      // to get the next 100 tracks.
-      do {
-        data = await getPlaylistTracks(token, playlistToCopy, next);
-
-        if (data.error) {
-          this.setState({
-            error: true,
-            errorMsg: JSON.stringify(data, null, 4),
-          });
-          return;
-        }
-
-        toast(`Gathered track set ${index + 1}`);
-
-        next = data.next;
-        tracks[index] = data.items;
-        index++;
-      } while (next);
-
-      // 'Add tracks to playlists' only allows 100 tracks at a time
-      for (let i = 0; i < tracks.length; i++) {
-        let tracklist = tracks[i].reduce((result, item) => {
-          if (!item.is_local) {
-            result.push(item.track.uri);
-          }
-          return result;
-        }, []);
-
-        let returnedData = await addTracksToPlaylist(
-          token,
-          newPlaylist.id,
-          tracklist
-        );
-
-        if (returnedData.error) {
-          this.setState({
-            error: true,
-            errorMsg: JSON.stringify(returnedData, null, 4),
-          });
-          return;
-        }
-
-        toast(`Added track set ${i + 1} of ${tracks.length}`);
-      }
-
-      toast.success("Playlist created!", {
-        autoClose: 5000,
-      });
-
-      this.setState({
-        isCopying: false,
-        copyCompleted: true,
-        newPlaylistUrl: newPlaylist.external_urls.spotify,
-      });
-    }, 1000);
-
-    this.setState({
-      isCopying: true,
-    });
-  };
-
-  getCurrentPlayingPlaylist = async (token) => {
-    let data = await getCurrentPlaybackInfo(token);
-
-    if (
-      !data ||
-      data.error ||
-      !data.context ||
-      data.context.type !== "playlist"
-    ) {
-      return {
-        error: true,
-      };
-    }
-
-    return data.context.external_urls.spotify.substr(8);
-  };
-
-  onChangePlaylistToCopy = (e) => {
-    this.setState({
-      playlistToCopy: e.target.value,
-    });
-  };
-
-  onReset = async () => {
-    const [{ token }] = this.context;
-    let currentPlaylist = await this.getCurrentPlayingPlaylist(token);
-
-    if (!currentPlaylist.error) {
-      toast("Auto-filled the playlist you're currently listening to!");
-    }
-
-    this.setState({
-      playlistToCopy: currentPlaylist.error ? "" : currentPlaylist,
-      isCopying: false,
-      copyCompleted: false,
-      newPlaylistUrl: "",
-    });
-  };
-
-  handleInputChange = (event) => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value,
-    });
-  };
-
-  render = () => {
-    const {
-      error,
-      errorMsg,
-      currentUser,
-      playlistToCopy,
-      isCopying,
-      copyCompleted,
-      newPlaylistUrl,
-      urlInDescription,
-    } = this.state;
-
-    if (error) {
-      return <SomethingWentWrong message={errorMsg} />;
-    }
-
-    if (!currentUser || isCopying) {
-      return <Loading />;
-    }
-
-    if (copyCompleted) {
-      return (
-        <MainContainer>
-          <div className="copy-container">
-            <div className="copy-again">
-              <h1>Playlist created!</h1>
-              <p>
-                You can find it{" "}
-                <a
-                  href={newPlaylistUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  here
-                </a>
-                .
-              </p>
-              <button onClick={this.onReset} className="btn-link">
-                Copy another playlist
-              </button>
-            </div>
-          </div>
-        </MainContainer>
-      );
-    }
-
-    return (
-      <MainContainer>
-        <div className="copy-container">
-          <div className="copy-centered">
-            <h1>{`Welcome, ${currentUser.id}!`}</h1>
-            <form className="copy-form" onSubmit={this.onFormSubmit}>
-              <h3>Playlist link:</h3>
-              <input
-                required
-                className="copy-form-link-input"
-                type="text"
-                onChange={this.onChangePlaylistToCopy}
-                value={playlistToCopy}
-                placeholder={placeholder}
-              />
-              <label className="copy-form-checkbox-label">
-                <input
-                  name="urlInDescription"
-                  type="checkbox"
-                  checked={urlInDescription}
-                  onChange={this.handleInputChange}
-                />
-                <span>Append playlist URL to new playlist description</span>
-              </label>
-              <input
-                className="copy-form-submit btn-link"
-                type="submit"
-                value="Copy!"
-              />
-            </form>
-          </div>
-        </div>
-      </MainContainer>
-    );
-  };
+  return tracks;
 }
-Copy.contextType = StateContext;
+
+async function getAppleId(trackId, progress) {
+  console.log("fetching", trackId);
+  await tick(60e3 / 8); // don’t overload the songlink API, which has a rate limit of 10 reqs per minute
+  const songLinkData = await fetch(
+    `https://api.song.link/v1-alpha.1/links?platform=spotify&type=song&id=${trackId}`
+  ).then((res) => res.json());
+  console.log(songLinkData);
+  if (!songLinkData.linksByPlatform.appleMusic) {
+    const firstKey = Object.keys(songLinkData.entitiesByUniqueId)[0];
+    if (firstKey) {
+      toast(
+        `failed to get apple music data for “${songLinkData.entitiesByUniqueId[firstKey].title}” (spotify track ${trackId}) [${progress}]`
+      );
+      return Object.assign(
+        { error: true },
+        songLinkData.entitiesByUniqueId[firstKey]
+      );
+    } else {
+      toast(
+        `failed to get apple music data for spotify track ${trackId} [${progress}]`
+      );
+      return { error: true };
+    }
+  }
+  toast(
+    `fetched apple music data for “${
+      songLinkData.entitiesByUniqueId[
+        songLinkData.linksByPlatform.appleMusic.entityUniqueId
+      ].title
+    }” [${progress}]`
+  );
+  return songLinkData.entitiesByUniqueId[
+    songLinkData.linksByPlatform.appleMusic.entityUniqueId
+  ];
+}
+
+async function getAppleIds(tracks) {
+  const result = [];
+  let i = 0;
+  for (const item of tracks) {
+    result.push(await getAppleId(item.track.id, `${i + 1}/${tracks.length}`));
+    i++;
+  }
+  return result;
+}
+
+/** @param {{ spotifyToken: string, music: MusicKit.MusicKitInstance }} foo */
+export default function CopyPage({ spotifyToken, music }) {
+  const [playlistLink, onPlaylistLinkChange] = useInputState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [result, setResult] = useState(null);
+  const onFormSubmit = useCallback((event) => {
+    event.preventDefault();
+    setResult(null);
+    setSubmitted(true);
+  }, []);
+  useEffect(() => {
+    if (!submitted) return;
+    let playlistLinkSegments = playlistLink.split("/").filter(Boolean);
+
+    if (playlistLinkSegments.length === 0) {
+      alert(
+        "Your Playlist link isn't in the right format. Should look like this: " +
+          placeholder
+      );
+      return;
+    }
+
+    // Split on ? in case there are query params in the pasted url
+    const playlistID = playlistLinkSegments.pop().split("?")[0];
+
+    const addedDescription = `Originally copied from https://open.spotify.com/playlist/${playlistID}`;
+
+    Promise.all([
+      getPlaylistInfo(spotifyToken, playlistID).then(
+        (pl) => (console.log("playlistInfo", pl), pl)
+      ),
+      getAllPlaylistTracks(spotifyToken, playlistID)
+        .then((tr) => (console.log("tracks", tr), tr))
+        .then(getAppleIds),
+    ])
+      .then(([playlistInfo, tracks]) =>
+        fetch("https://api.music.apple.com/v1/me/library/playlists", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${music.developerToken}`,
+            "Music-User-Token": music.musicUserToken,
+          },
+          body: JSON.stringify({
+            attributes: {
+              name: playlistInfo.name,
+              description: playlistInfo.description
+                ? `${playlistInfo.description} — ${addedDescription}`
+                : addedDescription,
+            },
+            relationships: {
+              tracks: {
+                data: tracks
+                  .filter((t) => !t.error)
+                  .map((track) => ({ id: track.id, type: "songs" })),
+              },
+            },
+          }),
+        })
+          .then((res) => res.json())
+          .then((result) => ({ result, tracks }))
+      )
+      .then(({ result, tracks }) => {
+        if (result.errors) {
+          throw result.errors;
+        } else {
+          const [playlist] = result.data;
+          setResult({
+            name: playlist.attributes.name,
+            skipped: tracks.filter((t) => t.error),
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast("Error. See console for details.");
+      });
+
+    toast("Retrieved playlist");
+  }, [
+    music.api,
+    music.developerToken,
+    music.musicUserToken,
+    music.playli,
+    playlistLink,
+    spotifyToken,
+    submitted,
+  ]);
+  return (
+    <MainContainer>
+      <div className="copy-container">
+        <div className="copy-centered">
+          <form className="copy-form" onSubmit={onFormSubmit}>
+            <h3>Spotify Playlist link:</h3>
+            <input
+              required
+              className="copy-form-link-input"
+              type="text"
+              onChange={(event) => {
+                setSubmitted(false);
+                onPlaylistLinkChange(event);
+              }}
+              value={playlistLink}
+              placeholder={placeholder}
+            />
+            <input
+              className="copy-form-submit btn-link"
+              type="submit"
+              value="Copy!"
+            />
+          </form>
+          {result ? (
+            <>
+              <h3>Result</h3>
+              <p>
+                You will be able to view the playlist “{result.name}” in Music
+                on your device shortly.
+              </p>
+              {result.skipped.length ? (
+                <>
+                  <p>Tracks that could not be found on Apple Music</p>
+                  <ul>
+                    {result.skipped.map((t) => (
+                      <li>
+                        <em>{t.title}</em> by {t.artistName}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+            </>
+          ) : (
+            <p>This will take a while to finish due to Odesli’s rate limits.</p>
+          )}
+        </div>
+      </div>
+    </MainContainer>
+  );
+}

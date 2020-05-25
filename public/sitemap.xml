@@ -7,7 +7,7 @@
   xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
   xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
-    <loc>https://copyfi.netlify.com/</loc>
+    <loc>https://eloquent-williams-1a7fe0.netlify.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>

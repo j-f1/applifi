@@ -5,11 +5,11 @@ const clientId = process.env.REACT_APP_CLIENT_ID;
 const redirectUri = process.env.REACT_APP_REDIRECT_URI;
 
 const scopes = [
-  "playlist-modify-public",
-  "playlist-modify-private",
-  "user-read-email",
-  "user-read-private",
-  "user-read-playback-state",
+  // "playlist-modify-public",
+  // "playlist-modify-private",
+  // "user-read-email",
+  // "user-read-private",
+  // "user-read-playback-state",
 ];
 
 const makeid = (length) => {
@@ -79,7 +79,7 @@ export const createPlaylist = async (token, userId, name, description) => {
 };
 
 export const getPlaylistInfo = async (token, playlistId) => {
-  let url = `https://api.spotify.com/v1/playlists/${playlistId}?fields=fields%3Dhref%2Cname%2Cdescription`;
+  let url = `https://api.spotify.com/v1/playlists/${playlistId}?fields=href%2Cname%2Cdescription`;
   let response = await fetch(url, {
     method: "GET",
     headers: new Headers({

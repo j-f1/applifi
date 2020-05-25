@@ -20,7 +20,7 @@ export default function NavBar() {
         <i className="material-icons">menu</i>
       </span>
       <NavLink to="/" className="logo">
-        copyfi
+        applifi
       </NavLink>
       <ul className={navbarClassName}>
         <li>
@@ -35,7 +35,7 @@ export default function NavBar() {
         </li>
         <li>
           <a
-            href="https://github.com/LfxB/copyfi"
+            href="https://github.com/j-f1/applifi"
             className="nav-links"
             target="_blank"
             rel="noopener noreferrer"

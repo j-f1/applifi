@@ -1,8 +1,8 @@
-# COPYFI
+# Applifi
 
 ![Website](https://img.shields.io/website/https/eloquent-williams-1a7fe0.netlify.com.svg?style=popout-square)
 
-A Web App to copy Spotify playlists to your account.
+A Web App to copy Spotify playlists to your Apple Music account.
 
 Currently deployed on [eloquent-williams-1a7fe0.netlify.com](https://eloquent-williams-1a7fe0.netlify.com/).
 

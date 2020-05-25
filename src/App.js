@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Home from "./Pages/Home";
-import Copy from "./Pages/Copy";
+import PostSpotify from "./Pages/PostSpotify";
 
 import "./App.css";
 
@@ -12,7 +12,7 @@ function App() {
     <Router>
       <Switch>
         <Route path="/" exact component={Home} />
-        <Route path="/copy" exact component={Copy} />
+        <Route path="/post-spotify" exact component={PostSpotify} />
       </Switch>
       <ToastContainer
         className="toast-container"

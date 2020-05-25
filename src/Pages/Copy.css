@@ -1,19 +1,9 @@
-.copy-container {
-  padding: 30px 0;
+.app-screen {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.copy-centered > h1,
-.copy-again > h1 {
-  text-align: center;
-}
-
-.copy-again > p {
-  text-align: center;
 }
 
 .copy-form {
@@ -26,36 +16,18 @@
 }
 
 .copy-form-link-input {
-  height: 40px;
+  padding: 0.5em;
   text-align: center;
-  color: #ffffff;
   background: transparent;
-  border-left-style: none;
-  border-right-style: none;
-  border-top-style: none;
-  border-bottom-style: solid;
-  border-bottom-width: 3px;
-  border-bottom-color: #c06ecf;
+  border: 2px solid var(--accent-dim);
+  margin: 2px;
+  font-size: inherit;
 }
 
 .copy-form-link-input:focus {
   outline: none;
-}
-
-.copy-form-checkbox-label {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  vertical-align: text-top;
-  margin-top: 30px;
-  font-size: 0.7em;
-  transition-property: color;
-  transition-duration: 0.3s;
-}
-
-.copy-form-checkbox-label:hover {
-  color: #c06ecf;
-  cursor: pointer;
+  margin: 0px;
+  border: 4px solid var(--accent);
 }
 
 .copy-form-checkbox-label > input {

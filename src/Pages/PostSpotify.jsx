@@ -1,26 +1,7 @@
 /* globals MusicKit: false */
 import React, { useState, useRef, useCallback } from "react";
-import { getHashFragment } from "Helpers/hash";
 import MainContainer from "Components/MainContainer";
 import CopyPage from "./Copy";
-
-function useSpotifyToken(location) {
-  let tokenRef = useRef(undefined);
-  if (tokenRef.current === undefined) {
-    let hash = getHashFragment(location);
-
-    // hideHashFragment();
-
-    if (!hash) {
-      tokenRef.current = null;
-      throw new Error();
-    }
-
-    tokenRef.current = hash.access_token;
-  }
-
-  return tokenRef.current;
-}
 
 MusicKit.configure({
   developerToken: process.env.REACT_APP_MUSICKIT_KEY,
@@ -42,7 +23,9 @@ function useMusicKit() {
 }
 
 export default function PostSpotify({ location }) {
-  const spotifyToken = useSpotifyToken(location);
+  const spotifyToken = new URLSearchParams(location.hash.slice(1)).get(
+    "access_token"
+  );
 
   const music = useMusicKit();
   const [ready, setReady] = useState(null);
@@ -59,10 +42,18 @@ export default function PostSpotify({ location }) {
     <CopyPage spotifyToken={spotifyToken} music={music} />
   ) : (
     <MainContainer>
-      <h1>Authorize with Apple Music to continue.</h1>
-      <button className="btn-link" onClick={auth} disabled={ready === false}>
-        Authorize with Apple Music
-      </button>
+      <div className="app-screen">
+        <div style={{ textAlign: "center" }}>
+          <h1>Sign in with Apple Music to continue.</h1>
+          <button
+            className="btn-link"
+            onClick={auth}
+            disabled={ready === false}
+          >
+            Sign in with Apple Music
+          </button>
+        </div>
+      </div>
     </MainContainer>
   );
 }

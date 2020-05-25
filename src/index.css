@@ -1,5 +1,8 @@
-@import url("https://fonts.googleapis.com/css?family=Rubik&display=swap");
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+:root {
+  --accent: #165577;
+  --accent-dim: #165577cc;
+  --accent-subtle: #16557733;
+}
 
 * {
   box-sizing: border-box;
@@ -9,9 +12,9 @@ body {
   font-size: calc(12px + 0.8vw);
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -22,14 +25,9 @@ body {
   }
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
-
 a {
   text-decoration: none;
-  color: #c06ecf;
+  color: var(--accent);
 }
 
 pre {
@@ -38,5 +36,27 @@ pre {
   border-style: solid;
   border-width: 1px;
   border-radius: 1px;
-  border-color: #c06ecf;
+  border-color: #165577;
+}
+
+.btn-link {
+  display: inline-block;
+  margin-top: 50px auto;
+  border: 0;
+  border-radius: 500px;
+  padding: 20px 32px;
+  color: #fff;
+  background-color: var(--accent-dim);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition-property: background-color, border-color, color, box-shadow, filter;
+  transition-duration: 0.3s;
+}
+
+.btn-link:hover {
+  background-color: var(--accent);
 }

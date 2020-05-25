@@ -2,6 +2,7 @@
   "private": true,
   "dependencies": {
     "husky": "^3.0.4",
+    "jsonwebtoken": "^8.5.1",
     "lint-staged": "^9.2.5",
     "prettier": "^2.0.5",
     "react": "^16.7.0",
@@ -24,9 +25,11 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build:client": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:server": "netlify-lambda build src/functions",
+    "build": "yarn build:client && yarn build:server"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -35,6 +38,7 @@
     "safari >= 13"
   ],
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.0",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",

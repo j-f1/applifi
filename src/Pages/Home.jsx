@@ -5,7 +5,7 @@ const authLink =
   "https://accounts.spotify.com/authorize?" +
   new URLSearchParams({
     client_id: process.env.REACT_APP_CLIENT_ID,
-    redirect_uri: process.env.REACT_APP_REDIRECT_URI,
+    redirect_uri: new URL("/post-spotify", window.location.href).toString(),
     response_type: "token",
   });
 
@@ -29,15 +29,6 @@ export default function Home() {
           the client side only; data is not kept in any server or database. You
           don’t need to own a Spotify playlist to copy it, it just has to be
           public.
-        </p>
-        <h3>Apple Music Access</h3>
-        <p>
-          This application requires access to your Apple Music account. Just
-          like with the Spotify account, all authentication is done on the
-          client side only; data is not kept in any server or database. We will
-          add the playlist to your account. This will result in all the songs in
-          the playlist being added to your library. Unfortunately, there’s no
-          way to add only the playlist without adding the songs.
         </p>
         <p style={{ textAlign: "center" }}>
           <a className="btn-link" href={authLink}>

@@ -24,9 +24,6 @@ exports.handler = async () => {
     return {
       statusCode: 200,
       body: jwtToken,
-      // // more keys you can return:
-      // headers: { "headerName": "headerValue", ... },
-      // isBase64Encoded: true,
     };
   } catch (err) {
     return { statusCode: 500, body: err.toString() };

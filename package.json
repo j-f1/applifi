@@ -28,7 +28,7 @@
     "build:client": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build:server": "netlify-lambda build src/functions",
+    "build:server": "netlify-lambda build src/lambda",
     "build": "yarn build:client && yarn build:server"
   },
   "eslintConfig": {
